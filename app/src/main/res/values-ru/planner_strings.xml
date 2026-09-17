@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="nav_planner">План</string>
+    <string name="planner_title">Финансовый план</string>
+    <string name="planner_monthly_budget">Бюджет на месяц</string>
+    <string name="planner_limit">Лимит: %1$s</string>
+    <string name="planner_amount">Сумма</string>
+    <string name="planner_save">Сохранить</string>
+    <string name="planner_remove">Убрать</string>
+    <string name="planner_new_goal">Новая цель</string>
+    <string name="planner_goal_example">Например: квартира</string>
+    <string name="planner_goal_target">Нужно накопить</string>
+    <string name="planner_add_goal">Добавить цель</string>
+    <string name="planner_goal_progress">%1$s из %2$s</string>
+    <string name="planner_top_up">Пополнить</string>
+    <string name="planner_recurring_payment">Регулярный платёж</string>
+    <string name="planner_name">Название</string>
+    <string name="planner_day_of_month">День месяца (1–31)</string>
+    <string name="planner_add_payment">Добавить платёж</string>
+    <string name="planner_payment_summary">%1$s · %2$d-го числа</string>
     <string name="transaction_deleted">Транзакция удалена</string>
     <string name="action_undo">Отменить</string>
     <string name="transaction_restored">Транзакция восстановлена</string>
