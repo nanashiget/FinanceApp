@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_planner">Plan</string>
+    <string name="transaction_deleted">Transaction deleted</string>
+    <string name="action_undo">Undo</string>
+    <string name="transaction_restored">Transaction restored</string>
+    <string name="transaction_restore_failed">Could not restore transaction</string>
+</resources>
