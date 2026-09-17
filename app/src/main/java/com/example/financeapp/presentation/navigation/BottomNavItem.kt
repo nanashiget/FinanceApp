@@ -7,7 +7,8 @@ import com.example.financeapp.R
 enum class BottomNavIcon {
     EXPENSES,
     INCOME,
-    ACCOUNTS
+    ACCOUNTS,
+    PLANNER
 }
 
 @Immutable
@@ -32,5 +33,10 @@ val bottomNavItems = listOf(
         route = AppRoute.Accounts,
         icon = BottomNavIcon.ACCOUNTS,
         labelResId = R.string.nav_accounts
+    ),
+    BottomNavItem(
+        route = AppRoute.Planner,
+        icon = BottomNavIcon.PLANNER,
+        labelResId = R.string.nav_planner
     )
 )

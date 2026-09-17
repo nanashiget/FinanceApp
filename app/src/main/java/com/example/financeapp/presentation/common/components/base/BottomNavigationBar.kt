@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.financeapp.core.theme.LocalSizing
 import com.example.financeapp.core.theme.LocalSpacing
+import com.example.financeapp.presentation.common.components.icons.FinanceBarChartIcon
 import com.example.financeapp.presentation.common.components.icons.FinancePersonIcon
 import com.example.financeapp.presentation.common.components.icons.FinanceReceiptIcon
 import com.example.financeapp.presentation.common.components.icons.FinanceTrendingUpIcon
@@ -37,7 +38,7 @@ fun BottomNavigationBar(
             color = MaterialTheme.colorScheme.outlineVariant
         )
         NavigationBar(
-            modifier = Modifier.defaultMinSize(minHeight =  sizing.navigationBarHeight),
+            modifier = Modifier.defaultMinSize(minHeight = sizing.navigationBarHeight),
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             tonalElevation = 0.dp
         ) {
@@ -54,18 +55,10 @@ fun BottomNavigationBar(
                         }
                         val iconModifier = Modifier.size(sizing.icon)
                         when (item.icon) {
-                            BottomNavIcon.EXPENSES -> FinanceReceiptIcon(
-                                color = iconColor,
-                                modifier = iconModifier
-                            )
-                            BottomNavIcon.INCOME -> FinanceTrendingUpIcon(
-                                color = iconColor,
-                                modifier = iconModifier
-                            )
-                            BottomNavIcon.ACCOUNTS -> FinancePersonIcon(
-                                color = iconColor,
-                                modifier = iconModifier
-                            )
+                            BottomNavIcon.EXPENSES -> FinanceReceiptIcon(iconColor, iconModifier)
+                            BottomNavIcon.INCOME -> FinanceTrendingUpIcon(iconColor, iconModifier)
+                            BottomNavIcon.ACCOUNTS -> FinancePersonIcon(iconColor, iconModifier)
+                            BottomNavIcon.PLANNER -> FinanceBarChartIcon(iconColor, iconModifier)
                         }
                     },
                     label = {

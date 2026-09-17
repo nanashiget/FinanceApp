@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="nav_planner">Plan</string>
+    <string name="planner_title">Financial plan</string>
+    <string name="planner_monthly_budget">Monthly budget</string>
+    <string name="planner_limit">Limit: %1$s</string>
+    <string name="planner_amount">Amount</string>
+    <string name="planner_save">Save</string>
+    <string name="planner_remove">Remove</string>
+    <string name="planner_new_goal">New goal</string>
+    <string name="planner_goal_example">For example: apartment</string>
+    <string name="planner_goal_target">Target amount</string>
+    <string name="planner_add_goal">Add goal</string>
+    <string name="planner_goal_progress">%1$s of %2$s</string>
+    <string name="planner_top_up">Top up</string>
+    <string name="planner_recurring_payment">Recurring payment</string>
+    <string name="planner_name">Name</string>
+    <string name="planner_day_of_month">Day of month (1–31)</string>
+    <string name="planner_add_payment">Add payment</string>
+    <string name="planner_payment_summary">%1$s · day %2$d</string>
+    <string name="transaction_deleted">Transaction deleted</string>
+    <string name="action_undo">Undo</string>
+    <string name="transaction_restored">Transaction restored</string>
+    <string name="transaction_restore_failed">Could not restore transaction</string>
+</resources>

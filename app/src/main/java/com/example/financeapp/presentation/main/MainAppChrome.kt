@@ -59,7 +59,11 @@ internal fun MainFloatingActionButton(
     onClick: () -> Unit
 ) {
     val sizing = LocalSizing.current
-    AnimatedVisibility(visible = route != AppRoute.Analytics, enter = fadeIn(), exit = fadeOut()) {
+    AnimatedVisibility(
+        visible = route != AppRoute.Analytics && route != AppRoute.Planner,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         FinanceActionButton(
             onClick = onClick,
             icon = {

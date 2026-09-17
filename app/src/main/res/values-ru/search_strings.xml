@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="transaction_search_label">Поиск</string>
+    <string name="transaction_search_hint">Категория или комментарий</string>
+    <string name="transaction_search_empty">Подходящих операций нет</string>
+</resources>
