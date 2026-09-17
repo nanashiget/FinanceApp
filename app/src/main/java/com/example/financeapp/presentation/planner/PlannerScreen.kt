@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
@@ -25,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,18 +81,12 @@ private fun PlannerScreen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
-        item {
-            BudgetCard(state.monthlyBudgetMinorUnits, currency, onBudgetSave)
-        }
-        item {
-            GoalCreator(onGoalAdd)
-        }
+        item { BudgetCard(state.monthlyBudgetMinorUnits, currency, onBudgetSave) }
+        item { GoalCreator(onGoalAdd) }
         items(state.goals, key = { "goal-${it.id}" }) { goal ->
             GoalCard(goal, currency, onGoalTopUp, onGoalDelete)
         }
-        item {
-            RecurringCreator(onRecurringAdd)
-        }
+        item { RecurringCreator(onRecurringAdd) }
         items(state.recurringPayments, key = { "recurring-${it.id}" }) { payment ->
             RecurringCard(payment, currency, onRecurringDelete)
         }
@@ -116,7 +110,9 @@ private fun BudgetCard(current: Long?, currency: Currency, onSave: (Long?) -> Un
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = { parseMinor(input)?.let { onSave(it) } }) { Text("Сохранить") }
-                if (current != null) OutlinedButton(onClick = { input = ""; onSave(null) }) { Text("Убрать") }
+                if (current != null) {
+                    OutlinedButton(onClick = { input = ""; onSave(null) }) { Text("Убрать") }
+                }
             }
         }
     }
@@ -131,22 +127,33 @@ private fun GoalCreator(onAdd: (String, Long) -> Unit) {
             Text("Новая цель", style = MaterialTheme.typography.titleLarge)
             OutlinedTextField(title, { title = it }, label = { Text("Например: квартира") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
-                target, { target = it }, label = { Text("Нужно накопить") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth()
+                target,
+                { target = it },
+                label = { Text("Нужно накопить") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth()
             )
             Button(onClick = {
                 val amount = parseMinor(target) ?: return@Button
                 onAdd(title, amount)
-                title = ""; target = ""
+                title = ""
+                target = ""
             }) { Text("Добавить цель") }
         }
     }
 }
 
 @Composable
-private fun GoalCard(goal: SavingsGoal, currency: Currency, onTopUp: (Long, Long) -> Unit, onDelete: (Long) -> Unit) {
+private fun GoalCard(
+    goal: SavingsGoal,
+    currency: Currency,
+    onTopUp: (Long, Long) -> Unit,
+    onDelete: (Long) -> Unit
+) {
     var topUp by remember(goal.id) { mutableStateOf("") }
-    val progress = if (goal.targetMinorUnits <= 0) 0f else (goal.savedMinorUnits.toFloat() / goal.targetMinorUnits).coerceIn(0f, 1f)
+    val progress = if (goal.targetMinorUnits <= 0) 0f else {
+        (goal.savedMinorUnits.toFloat() / goal.targetMinorUnits).coerceIn(0f, 1f)
+    }
     Card(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -164,7 +171,10 @@ private fun GoalCard(goal: SavingsGoal, currency: Currency, onTopUp: (Long, Long
                     modifier = Modifier.weight(1f)
                 )
                 Button(onClick = {
-                    parseMinor(topUp)?.let { onTopUp(goal.id, it); topUp = "" }
+                    parseMinor(topUp)?.let {
+                        onTopUp(goal.id, it)
+                        topUp = ""
+                    }
                 }) { Text("+") }
             }
         }
@@ -180,20 +190,38 @@ private fun RecurringCreator(onAdd: (String, Long, Int) -> Unit) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text("Регулярный платёж", style = MaterialTheme.typography.titleLarge)
             OutlinedTextField(title, { title = it }, label = { Text("Название") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(amount, { amount = it }, label = { Text("Сумма") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(day, { day = it.filter(Char::isDigit).take(2) }, label = { Text("День месяца (1–31)") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                amount,
+                { amount = it },
+                label = { Text("Сумма") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                day,
+                { day = it.filter(Char::isDigit).take(2) },
+                label = { Text("День месяца (1–31)") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
             Button(onClick = {
                 val parsedAmount = parseMinor(amount) ?: return@Button
                 val parsedDay = day.toIntOrNull() ?: return@Button
                 onAdd(title, parsedAmount, parsedDay)
-                title = ""; amount = ""; day = ""
+                title = ""
+                amount = ""
+                day = ""
             }) { Text("Добавить платёж") }
         }
     }
 }
 
 @Composable
-private fun RecurringCard(payment: RecurringPayment, currency: Currency, onDelete: (Long) -> Unit) {
+private fun RecurringCard(
+    payment: RecurringPayment,
+    currency: Currency,
+    onDelete: (Long) -> Unit
+) {
     Card(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()) {
         Row(Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
@@ -213,5 +241,8 @@ private fun parseMinor(value: String): Long? = runCatching {
         .takeIf { it > 0 }
 }.getOrNull()
 
-private fun minorToInput(value: Long): String = BigDecimal.valueOf(value, 2).stripTrailingZeros().toPlainString()
-private fun money(value: Long, currency: Currency): String = Money(value, currency).formatWithMinorUnits()
+private fun minorToInput(value: Long): String =
+    BigDecimal.valueOf(value, 2).stripTrailingZeros().toPlainString()
+
+private fun money(value: Long, currency: Currency): String =
+    Money(value, currency).formatWithMinorUnits()
