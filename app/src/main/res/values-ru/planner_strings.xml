@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_planner">План</string>
+    <string name="transaction_deleted">Транзакция удалена</string>
+    <string name="action_undo">Отменить</string>
+    <string name="transaction_restored">Транзакция восстановлена</string>
+    <string name="transaction_restore_failed">Не удалось восстановить транзакцию</string>
+</resources>
