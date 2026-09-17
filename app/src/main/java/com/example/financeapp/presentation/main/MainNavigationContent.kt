@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.navigation.NavHostController
 import com.example.financeapp.core.theme.LocalSpacing
+import com.example.financeapp.domain.model.Currency
 import com.example.financeapp.domain.model.TransactionType
 import com.example.financeapp.presentation.accounts.AccountsRoute
 import com.example.financeapp.presentation.analytics.AnalyticsRoute
@@ -19,7 +21,7 @@ import com.example.financeapp.presentation.income.IncomeRoute
 import com.example.financeapp.presentation.navigation.AppNavGraph
 import com.example.financeapp.presentation.navigation.AppRoute
 import com.example.financeapp.presentation.navigation.isMainRoute
-import androidx.navigation.NavHostController
+import com.example.financeapp.presentation.planner.PlannerRoute
 import kotlin.math.abs
 
 @Composable
@@ -28,6 +30,7 @@ internal fun MainNavigationContent(
     selectedRoute: AppRoute,
     mainState: MainState,
     isOnline: Boolean,
+    plannerCurrency: Currency,
     modifier: Modifier = Modifier,
     onRetry: () -> Unit,
     onTransactionClick: (Long, TransactionType) -> Unit,
@@ -82,35 +85,38 @@ internal fun MainNavigationContent(
                         }
                     )
                 },
-            expensesContent = { modifier ->
+            expensesContent = { screenModifier ->
                 ExpensesRoute(
-                    modifier = modifier,
+                    modifier = screenModifier,
                     state = mainState.expensesState,
                     onRetry = onRetry,
                     onTransactionClick = { id -> onTransactionClick(id, TransactionType.EXPENSE) },
                     onTransactionDeleteRequest = onTransactionDeleteRequest
                 )
             },
-            incomeContent = { modifier ->
+            incomeContent = { screenModifier ->
                 IncomeRoute(
-                    modifier = modifier,
+                    modifier = screenModifier,
                     state = mainState.incomeState,
                     onRetry = onRetry,
                     onTransactionClick = { id -> onTransactionClick(id, TransactionType.INCOME) },
                     onTransactionDeleteRequest = onTransactionDeleteRequest
                 )
             },
-            accountsContent = { modifier ->
+            accountsContent = { screenModifier ->
                 AccountsRoute(
-                    modifier = modifier,
+                    modifier = screenModifier,
                     state = mainState.accountsState,
                     onRetry = onRetry,
                     onAccountClick = onAccountClick,
                     onAccountDeleteRequest = onAccountDeleteRequest
                 )
             },
-            analyticsContent = { modifier ->
-                AnalyticsRoute(modifier = modifier, onBack = navController::navigateBackToMain)
+            plannerContent = { screenModifier ->
+                PlannerRoute(currency = plannerCurrency, modifier = screenModifier)
+            },
+            analyticsContent = { screenModifier ->
+                AnalyticsRoute(modifier = screenModifier, onBack = navController::navigateBackToMain)
             }
         )
     }
