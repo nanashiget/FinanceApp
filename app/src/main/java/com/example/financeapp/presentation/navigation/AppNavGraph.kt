@@ -21,6 +21,7 @@ fun AppNavGraph(
     expensesContent: @Composable (Modifier) -> Unit,
     incomeContent: @Composable (Modifier) -> Unit,
     accountsContent: @Composable (Modifier) -> Unit,
+    plannerContent: @Composable (Modifier) -> Unit,
     analyticsContent: @Composable (Modifier) -> Unit = {},
 ) {
     NavHost(
@@ -28,40 +29,19 @@ fun AppNavGraph(
         startDestination = AppRoute.Expenses.route,
         modifier = modifier
     ) {
-        composable(
-            route = AppRoute.Expenses.route,
-            enterTransition = { appEnterTransition() },
-            exitTransition = { appExitTransition() },
-            popEnterTransition = { appEnterTransition() },
-            popExitTransition = { appExitTransition() }
-        ) {
+        composable(AppRoute.Expenses.route, enterTransition = { appEnterTransition() }, exitTransition = { appExitTransition() }, popEnterTransition = { appEnterTransition() }, popExitTransition = { appExitTransition() }) {
             expensesContent(Modifier.fillMaxSize())
         }
-        composable(
-            route = AppRoute.Income.route,
-            enterTransition = { appEnterTransition() },
-            exitTransition = { appExitTransition() },
-            popEnterTransition = { appEnterTransition() },
-            popExitTransition = { appExitTransition() }
-        ) {
+        composable(AppRoute.Income.route, enterTransition = { appEnterTransition() }, exitTransition = { appExitTransition() }, popEnterTransition = { appEnterTransition() }, popExitTransition = { appExitTransition() }) {
             incomeContent(Modifier.fillMaxSize())
         }
-        composable(
-            route = AppRoute.Accounts.route,
-            enterTransition = { appEnterTransition() },
-            exitTransition = { appExitTransition() },
-            popEnterTransition = { appEnterTransition() },
-            popExitTransition = { appExitTransition() }
-        ) {
+        composable(AppRoute.Accounts.route, enterTransition = { appEnterTransition() }, exitTransition = { appExitTransition() }, popEnterTransition = { appEnterTransition() }, popExitTransition = { appExitTransition() }) {
             accountsContent(Modifier.fillMaxSize())
         }
-        composable(
-            route = AppRoute.Analytics.route,
-            enterTransition = { appEnterTransition() },
-            exitTransition = { appExitTransition() },
-            popEnterTransition = { appEnterTransition() },
-            popExitTransition = { appExitTransition() }
-        ) {
+        composable(AppRoute.Planner.route, enterTransition = { appEnterTransition() }, exitTransition = { appExitTransition() }, popEnterTransition = { appEnterTransition() }, popExitTransition = { appExitTransition() }) {
+            plannerContent(Modifier.fillMaxSize())
+        }
+        composable(AppRoute.Analytics.route, enterTransition = { appEnterTransition() }, exitTransition = { appExitTransition() }, popEnterTransition = { appEnterTransition() }, popExitTransition = { appExitTransition() }) {
             analyticsContent(Modifier.fillMaxSize())
         }
     }
@@ -114,6 +94,7 @@ private fun String?.toAppRouteOrNull(): AppRoute? {
         AppRoute.Expenses.route -> AppRoute.Expenses
         AppRoute.Income.route -> AppRoute.Income
         AppRoute.Accounts.route -> AppRoute.Accounts
+        AppRoute.Planner.route -> AppRoute.Planner
         AppRoute.Analytics.route -> AppRoute.Analytics
         else -> null
     }
