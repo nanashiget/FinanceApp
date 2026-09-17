@@ -30,12 +30,6 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: Unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
-
-      - name: Lint
-        run: ./gradlew lintDebug --stacktrace
-
       - name: Assemble debug
         run: ./gradlew assembleDebug --stacktrace
 
@@ -46,3 +40,9 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
+
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Lint
+        run: ./gradlew lintDebug --stacktrace
