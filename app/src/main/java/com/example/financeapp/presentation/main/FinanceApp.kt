@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -42,7 +43,6 @@ import com.example.financeapp.presentation.common.placeholders.ScreenError
 import com.example.financeapp.presentation.navigation.AppRoute
 import kotlinx.coroutines.launch
 
-/** Connects app-wide state and events to independent presentation hosts. */
 @Composable
 fun FinanceApp(
     userSettings: UserSettings,
@@ -54,10 +54,7 @@ fun FinanceApp(
     onThemeModeSelected: (AppThemeMode) -> Unit,
     onCurrencySelected: (Currency) -> Unit,
     onBiometricLoginEnabledChange: (Boolean) -> Unit,
-    onBiometricAuthenticationRequest: (
-        onAuthenticated: () -> Unit,
-        onFailure: (isFailedAttempt: Boolean) -> Unit
-    ) -> Unit,
+    onBiometricAuthenticationRequest: (onAuthenticated: () -> Unit, onFailure: (isFailedAttempt: Boolean) -> Unit) -> Unit,
     onVerifyPinCode: suspend (String) -> Boolean,
     onSetPinCode: suspend (String) -> Unit,
     onClearPinCode: suspend () -> Unit,
@@ -89,6 +86,10 @@ fun FinanceApp(
     val accountDeleteHasTransactionsMessage = stringResource(R.string.account_delete_has_transactions)
     val transactionSavedLocallyMessage = stringResource(R.string.transaction_saved_locally)
     val biometricFailedMessage = stringResource(R.string.settings_biometry_failed)
+    val transactionDeletedMessage = stringResource(R.string.transaction_deleted)
+    val undoLabel = stringResource(R.string.action_undo)
+    val transactionRestoredMessage = stringResource(R.string.transaction_restored)
+    val transactionRestoreFailedMessage = stringResource(R.string.transaction_restore_failed)
 
     LaunchedEffect(mainViewModel, snackbarHostState) {
         mainViewModel.effects.collect { effect ->
@@ -103,6 +104,18 @@ fun FinanceApp(
                     }
                     snackbarHostState.showSnackbar(message)
                 }
+                is MainEffect.TransactionDeleted -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = transactionDeletedMessage,
+                        actionLabel = undoLabel
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        mainViewModel.onIntent(MainIntent.RestoreDeletedTransaction(effect.transaction))
+                    }
+                }
+                is MainEffect.TransactionRestored -> snackbarHostState.showSnackbar(
+                    if (effect.restored) transactionRestoredMessage else transactionRestoreFailedMessage
+                )
                 is MainEffect.SyncFailed -> failedSyncOperationsCount = effect.count
             }
         }
@@ -152,6 +165,7 @@ fun FinanceApp(
                             )
                         )
                     )
+                    AppRoute.Planner,
                     AppRoute.Analytics -> Unit
                 }
             }
@@ -163,6 +177,7 @@ fun FinanceApp(
             selectedRoute = selectedRoute,
             mainState = mainState,
             isOnline = isOnline,
+            plannerCurrency = userSettings.selectedCurrency,
             onRetry = { mainViewModel.onIntent(MainIntent.Retry) },
             onTransactionClick = { id, type ->
                 transactionEditorViewModel.onIntent(
@@ -178,9 +193,7 @@ fun FinanceApp(
                 )
             },
             onAccountDeleteRequest = { pendingDeleteTarget = DeleteTarget.Account(it) },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier = Modifier.fillMaxSize().padding(innerPadding)
         )
     }
 
@@ -247,5 +260,6 @@ private fun AppRoute.toTransactionType(): TransactionType = when (this) {
     AppRoute.Expenses -> TransactionType.EXPENSE
     AppRoute.Income -> TransactionType.INCOME
     AppRoute.Accounts,
+    AppRoute.Planner,
     AppRoute.Analytics -> error("Transaction type is only defined for transaction routes")
 }
