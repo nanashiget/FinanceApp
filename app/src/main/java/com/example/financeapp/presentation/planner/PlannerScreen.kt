@@ -26,9 +26,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.financeapp.R
 import com.example.financeapp.domain.model.Currency
 import com.example.financeapp.domain.model.Money
 import com.example.financeapp.domain.model.PlannerState
@@ -76,7 +78,7 @@ private fun PlannerScreen(
     ) {
         item {
             Text(
-                text = "Финансовый план",
+                text = stringResource(R.string.planner_title),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
@@ -99,19 +101,25 @@ private fun BudgetCard(current: Long?, currency: Currency, onSave: (Long?) -> Un
     var input by remember(current) { mutableStateOf(current?.let { minorToInput(it) }.orEmpty()) }
     Card(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("Бюджет на месяц", style = MaterialTheme.typography.titleLarge)
-            if (current != null) Text("Лимит: ${money(current, currency)}")
+            Text(stringResource(R.string.planner_monthly_budget), style = MaterialTheme.typography.titleLarge)
+            if (current != null) {
+                Text(stringResource(R.string.planner_limit, money(current, currency)))
+            }
             OutlinedTextField(
                 value = input,
                 onValueChange = { input = it },
-                label = { Text("Сумма") },
+                label = { Text(stringResource(R.string.planner_amount)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth()
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { parseMinor(input)?.let { onSave(it) } }) { Text("Сохранить") }
+                Button(onClick = { parseMinor(input)?.let { onSave(it) } }) {
+                    Text(stringResource(R.string.planner_save))
+                }
                 if (current != null) {
-                    OutlinedButton(onClick = { input = ""; onSave(null) }) { Text("Убрать") }
+                    OutlinedButton(onClick = { input = ""; onSave(null) }) {
+                        Text(stringResource(R.string.planner_remove))
+                    }
                 }
             }
         }
@@ -124,12 +132,17 @@ private fun GoalCreator(onAdd: (String, Long) -> Unit) {
     var target by remember { mutableStateOf("") }
     Card(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("Новая цель", style = MaterialTheme.typography.titleLarge)
-            OutlinedTextField(title, { title = it }, label = { Text("Например: квартира") }, modifier = Modifier.fillMaxWidth())
+            Text(stringResource(R.string.planner_new_goal), style = MaterialTheme.typography.titleLarge)
+            OutlinedTextField(
+                title,
+                { title = it },
+                label = { Text(stringResource(R.string.planner_goal_example)) },
+                modifier = Modifier.fillMaxWidth()
+            )
             OutlinedTextField(
                 target,
                 { target = it },
-                label = { Text("Нужно накопить") },
+                label = { Text(stringResource(R.string.planner_goal_target)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -138,7 +151,9 @@ private fun GoalCreator(onAdd: (String, Long) -> Unit) {
                 onAdd(title, amount)
                 title = ""
                 target = ""
-            }) { Text("Добавить цель") }
+            }) {
+                Text(stringResource(R.string.planner_add_goal))
+            }
         }
     }
 }
@@ -160,13 +175,19 @@ private fun GoalCard(
                 Text(goal.title, style = MaterialTheme.typography.titleMedium)
                 IconButton(onClick = { onDelete(goal.id) }) { Text("×") }
             }
-            Text("${money(goal.savedMinorUnits, currency)} из ${money(goal.targetMinorUnits, currency)}")
+            Text(
+                stringResource(
+                    R.string.planner_goal_progress,
+                    money(goal.savedMinorUnits, currency),
+                    money(goal.targetMinorUnits, currency)
+                )
+            )
             LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = topUp,
                     onValueChange = { topUp = it },
-                    label = { Text("Пополнить") },
+                    label = { Text(stringResource(R.string.planner_top_up)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier.weight(1f)
                 )
@@ -188,19 +209,24 @@ private fun RecurringCreator(onAdd: (String, Long, Int) -> Unit) {
     var day by remember { mutableStateOf("") }
     Card(modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("Регулярный платёж", style = MaterialTheme.typography.titleLarge)
-            OutlinedTextField(title, { title = it }, label = { Text("Название") }, modifier = Modifier.fillMaxWidth())
+            Text(stringResource(R.string.planner_recurring_payment), style = MaterialTheme.typography.titleLarge)
+            OutlinedTextField(
+                title,
+                { title = it },
+                label = { Text(stringResource(R.string.planner_name)) },
+                modifier = Modifier.fillMaxWidth()
+            )
             OutlinedTextField(
                 amount,
                 { amount = it },
-                label = { Text("Сумма") },
+                label = { Text(stringResource(R.string.planner_amount)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 day,
                 { day = it.filter(Char::isDigit).take(2) },
-                label = { Text("День месяца (1–31)") },
+                label = { Text(stringResource(R.string.planner_day_of_month)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -211,7 +237,9 @@ private fun RecurringCreator(onAdd: (String, Long, Int) -> Unit) {
                 title = ""
                 amount = ""
                 day = ""
-            }) { Text("Добавить платёж") }
+            }) {
+                Text(stringResource(R.string.planner_add_payment))
+            }
         }
     }
 }
@@ -226,7 +254,13 @@ private fun RecurringCard(
         Row(Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
                 Text(payment.title, style = MaterialTheme.typography.titleMedium)
-                Text("${money(payment.amountMinorUnits, currency)} · ${payment.dayOfMonth}-го числа")
+                Text(
+                    stringResource(
+                        R.string.planner_payment_summary,
+                        money(payment.amountMinorUnits, currency),
+                        payment.dayOfMonth
+                    )
+                )
             }
             IconButton(onClick = { onDelete(payment.id) }) { Text("×") }
         }
